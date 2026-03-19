@@ -1,7 +1,19 @@
+'use client'
+
 import { createContext, useContext, useState, ReactNode } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { useAuth } from './auth-context'
 import { PostgrestError } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+
+// Create client only on client-side
+let supabase: ReturnType<typeof createClient> | null = null
+
+if (typeof window !== 'undefined') {
+  supabase = createClient(supabaseUrl, supabaseKey)
+}
 
 export type Trip = {
   id: string
@@ -59,6 +71,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
 
   const fetchTrips = async () => {
+    if (!supabase) return
     setLoading(true)
     setError(null)
     try {
@@ -77,6 +90,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }
 
   const fetchUserProfile = async (userId: string) => {
+    if (!supabase) return
     setLoading(true)
     setError(null)
     try {
@@ -96,6 +110,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }
 
   const createTrip = async (tripData: Omit<Trip, 'id' | 'created_at' | 'current_participants'>) => {
+    if (!supabase) return { error: new Error('Supabase not initialized') as PostgrestError }
     setLoading(true)
     setError(null)
     try {
@@ -115,6 +130,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   }
 
   const applyToTrip = async (tripId: string, message: string) => {
+    if (!supabase) return { error: new Error('Supabase not initialized') as PostgrestError }
     setLoading(true)
     setError(null)
     try {

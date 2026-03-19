@@ -1,6 +1,18 @@
+'use client'
+
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 import { Session, User, AuthError } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+
+// Create client only on client-side
+let supabase: ReturnType<typeof createClient> | null = null
+
+if (typeof window !== 'undefined') {
+  supabase = createClient(supabaseUrl, supabaseKey)
+}
 
 type AuthContextType = {
   session: Session | null
@@ -20,6 +32,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
     supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
       setSession(session)
       setUser(session?.user ?? null)
@@ -38,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) return { error: new Error('Supabase not initialized') as AuthError }
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -46,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signUp = async (email: string, password: string) => {
+    if (!supabase) return { error: new Error('Supabase not initialized') as AuthError }
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -54,10 +73,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signOut = async () => {
+    if (!supabase) return
     await supabase.auth.signOut()
   }
 
   const signInWithGoogle = async () => {
+    if (!supabase) return { error: new Error('Supabase not initialized') as AuthError }
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -79,7 +100,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signInWithGoogle,
       }}
     >
-      {children}</AuthContext.Provider>
+      {children}
+    </AuthContext.Provider>
   )
 }
 
