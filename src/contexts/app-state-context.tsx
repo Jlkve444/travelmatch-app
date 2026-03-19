@@ -50,6 +50,22 @@ export type UserProfile = {
   languages: string[]
 }
 
+// Type for inserting new trips
+type TripInsert = {
+  title: string
+  description?: string
+  destination: string
+  country_code: string
+  start_date: string
+  end_date: string
+  max_participants: number
+  current_participants: number
+  budget_range: { min: number; max: number; currency: string }
+  image_url: string
+  creator_id?: string
+  tags: string[]
+}
+
 type AppStateContextType = {
   trips: Trip[]
   userProfile: UserProfile | null
@@ -57,7 +73,7 @@ type AppStateContextType = {
   error: string | null
   fetchTrips: () => Promise<void>
   fetchUserProfile: (userId: string) => Promise<void>
-  createTrip: (trip: Omit<Trip, 'id' | 'created_at' | 'current_participants'>) => Promise<{ error: PostgrestError | null }>
+  createTrip: (trip: TripInsert) => Promise<{ error: PostgrestError | null }>
   applyToTrip: (tripId: string, message: string) => Promise<{ error: PostgrestError | null }>
 }
 
@@ -109,14 +125,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const createTrip = async (tripData: Omit<Trip, 'id' | 'created_at' | 'current_participants'>) => {
+  const createTrip = async (tripData: TripInsert) => {
     if (!supabase) return { error: new Error('Supabase not initialized') as PostgrestError }
     setLoading(true)
     setError(null)
     try {
+      const insertData = {
+        ...tripData,
+        creator_id: user?.id,
+      }
+      
       const { error } = await supabase
         .from('trips')
-        .insert([{ ...tripData, current_participants: 1 }])
+        .insert(insertData as any)
       
       if (error) throw error
       await fetchTrips()
@@ -136,12 +157,12 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase
         .from('trip_applications')
-        .insert([{
+        .insert({
           trip_id: tripId,
           user_id: user?.id,
           message,
           status: 'pending',
-        }])
+        } as any)
       
       if (error) throw error
       return { error: null }
