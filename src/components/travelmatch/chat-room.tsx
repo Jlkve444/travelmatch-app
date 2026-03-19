@@ -355,7 +355,7 @@ export function ChatRoom() {
                         
                         {isMe && (
                           <span className="text-[10px] text-deep-ocean/40">
-                            {message.read_by?.length > 0 ? (
+                            {(message.read_by?.length ?? 0) > 0 ? (
                               <CheckCheck className="w-3 h-3 text-moss-green" />
                             ) : (
                               <Check className="w-3 h-3" />
