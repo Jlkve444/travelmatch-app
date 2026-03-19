@@ -197,8 +197,8 @@ export const applicationsApi = {
     return data
   },
 
-  // Update application status (accept/reject)
-  async updateStatus(id: string, status: 'accepted' | 'rejected') {
+  // Update application status (accept/reject/withdraw)
+  async updateStatus(id: string, status: 'accepted' | 'rejected' | 'withdrawn') {
     const { data, error } = await supabase
       .from('trip_applications')
       .update({ status })

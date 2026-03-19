@@ -89,3 +89,29 @@ export type TripApplication = {
   created_at: string
   updated_at: string
 }
+
+export type ChatRoom = {
+  id: string
+  trip_id?: string
+  name: string
+  type: 'direct' | 'group'
+  created_at: string
+  updated_at: string
+}
+
+export type Message = {
+  id: string
+  room_id: string
+  sender_id: string
+  content: string
+  type: 'text' | 'voice' | 'image' | 'poll'
+  metadata?: {
+    duration?: number
+    waveform?: number[]
+    poll_options?: string[]
+    poll_votes?: Record<string, number>
+  }
+  read_by?: string[]
+  created_at: string
+  updated_at: string
+}

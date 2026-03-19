@@ -335,8 +335,18 @@ export function useAuth() {
 // ============================================
 export function useRealtimeTrips(callback: (trip: any) => void) {
   useEffect(() => {
-    const subscription = realtimeApi.subscribeToTrips(callback)
-    return () => subscription.unsubscribe()
+    let unsubscribe: (() => void) | undefined
+    
+    const setupSubscription = async () => {
+      const subscription = await realtimeApi.subscribeToTrips(callback)
+      unsubscribe = subscription.unsubscribe
+    }
+    
+    setupSubscription()
+    
+    return () => {
+      unsubscribe?.()
+    }
   }, [callback])
 }
 

@@ -288,7 +288,7 @@ export function DiscoverMatches() {
                 </div>
                 <Slider
                   value={[minScore]}
-                  onValueChange={([value]) => setMinScore(value)}
+                  onValueChange={(value) => setMinScore(Array.isArray(value) ? value[0] : value)}
                   min={40}
                   max={95}
                   step={5}
