@@ -199,7 +199,7 @@ export function NomadSyncTripCreation() {
                 {/* Date Range */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium mb-3" style={{ color: COLORS.fog }}>
-                    <Calendar className="w-4 h-4 inline mr-2" /
+                    <Calendar className="w-4 h-4 inline mr-2" />
                     Zeitraum
                   </label>
                   
