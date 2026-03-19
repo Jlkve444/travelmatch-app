@@ -110,7 +110,7 @@ export function TripCreator() {
                 Zeitraum
               </Label>
               <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger>
                   <Button
                     variant="outline"
                     className={cn(
@@ -140,7 +140,7 @@ export function TripCreator() {
                     mode="range"
                     defaultMonth={new Date()}
                     selected={dateRange}
-                    onSelect={setDateRange}
+                    onSelect={(range) => setDateRange(range ? { from: range.from || new Date(), to: range.to || new Date() } : undefined)}
                     numberOfMonths={2}
                     locale={de}
                   />
@@ -222,7 +222,7 @@ export function TripCreator() {
               </div>
               <Slider
                 value={[formData.maxParticipants]}
-                onValueChange={([value]: number[]) => setFormData({ ...formData, maxParticipants: value })}
+                onValueChange={(value) => setFormData({ ...formData, maxParticipants: Array.isArray(value) ? value[0] : value })}
                 min={2}
                 max={10}
                 step={1}
