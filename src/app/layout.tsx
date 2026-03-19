@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import { AppStateProvider } from "@/contexts/app-state-context";
+import { ChatProvider } from "@/contexts/chat-context";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,7 +29,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col" style={{ backgroundColor: '#F7F5F0' }}>
         <AuthProvider>
           <AppStateProvider>
-            {children}
+            <ChatProvider>
+              {children}
+            </ChatProvider>
           </AppStateProvider>
         </AuthProvider>
       </body>
