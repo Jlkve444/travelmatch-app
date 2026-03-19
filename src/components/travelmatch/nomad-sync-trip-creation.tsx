@@ -317,7 +317,7 @@ export function NomadSyncTripCreation() {
                 {/* Budget Slider */}
                 <div className="mb-6">
                   <label className="block text-sm font-medium mb-4" style={{ color: COLORS.fog }}>
-                    <Wallet className="w-4 h-4 inline mr-2" /
+                    <Wallet className="w-4 h-4 inline mr-2" />
                     Geschätztes Budget p.P.
                   </label>
                   

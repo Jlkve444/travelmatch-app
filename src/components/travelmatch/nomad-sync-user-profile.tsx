@@ -180,7 +180,7 @@ export function NomadSyncUserProfile() {
           </div>
 
           {/* Verification Badge */}
-          <{USER.isVerified && (
+          {USER.isVerified && (
             <div 
               className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full flex items-center gap-1.5"
               style={{ 
